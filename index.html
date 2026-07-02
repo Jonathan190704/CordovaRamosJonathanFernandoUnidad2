@@ -99,8 +99,46 @@
 
       .hero-gradient { background: linear-gradient(135deg, #0c1455 0%, #1e2fa8 40%, #2a3fcb 70%, #3b55e6 100%); position: relative; overflow: hidden; }
       .hero-gradient::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 80% at 60% 20%, rgba(79,110,247,0.35) 0%, transparent 70%); pointer-events: none; }
-      .service-card { background: #fff; border: 1px solid #e9ebf0; border-radius: 18px; padding: 1.75rem; transition: box-shadow 0.25s, transform 0.25s; }
-      .service-card:hover { box-shadow: 0 8px 32px rgba(59,85,230,0.10); transform: translateY(-3px); }
+      .service-card-wrapper {
+        perspective: 1000px;
+        height: 100%;
+      }
+      .service-card {
+        background: #fff;
+        border: 1px solid #e9ebf0;
+        border-radius: 18px;
+        padding: 1.75rem;
+        transition: 
+          transform 700ms cubic-bezier(0.25, 1, 0.5, 1),
+          box-shadow 700ms cubic-bezier(0.25, 1, 0.5, 1),
+          border-color 700ms cubic-bezier(0.25, 1, 0.5, 1);
+        transform-style: preserve-3d;
+        will-change: transform, box-shadow;
+      }
+      .service-card-wrapper:hover .service-card {
+        border-color: rgba(79, 110, 247, 0.3);
+        box-shadow: 0 22px 45px rgba(12, 20, 85, 0.12);
+        transform: translateY(-8px) rotateY(360deg);
+      }
+      .service-card * {
+        transform-style: preserve-3d;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+      }
+      .service-card > div,
+      .service-card > h3,
+      .service-card > p {
+        transition: transform 700ms cubic-bezier(0.25, 1, 0.5, 1);
+      }
+      .service-card-wrapper:hover .service-card > div {
+        transform: translateZ(30px);
+      }
+      .service-card-wrapper:hover .service-card > h3 {
+        transform: translateZ(20px);
+      }
+      .service-card-wrapper:hover .service-card > p {
+        transform: translateZ(10px);
+      }
 
       .chat-btn { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 50; background: #3b55e6; color: #fff; width: 3.5rem; height: 3.5rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 24px rgba(59,85,230,0.40); transition: background 0.2s, transform 0.2s; }
       .chat-btn:hover { background: #2a3fcb; transform: scale(1.08); }
@@ -440,23 +478,29 @@ input:focus {
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:grid-cols-3 md:gap-8" role="list">
-        <article class="service-card" role="listitem">
-          <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-5 text-xl" aria-hidden="true"><i class="fa-solid fa-code"></i></div>
-          <h3 class="text-lg font-bold mb-3 text-gray-900">1. Validación Frontend</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">Retroalimentación instantánea en el navegador usando atributos nativos de HTML5 y JavaScript. Evita envíos innecesarios y optimiza la experiencia de usuario.</p>
-        </article>
+        <div class="service-card-wrapper" role="listitem">
+          <article class="service-card h-full">
+            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-5 text-xl" aria-hidden="true"><i class="fa-solid fa-code"></i></div>
+            <h3 class="text-lg font-bold mb-3 text-gray-900">1. Validación Frontend</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">Retroalimentación instantánea en el navegador usando atributos nativos de HTML5 y JavaScript. Evita envíos innecesarios y optimiza la experiencia de usuario.</p>
+          </article>
+        </div>
 
-        <article class="service-card" role="listitem">
-          <div class="w-12 h-12 bg-violet-50 text-violet-600 rounded-2xl flex items-center justify-center mb-5 text-xl" aria-hidden="true"><i class="fa-solid fa-server"></i></div>
-          <h3 class="text-lg font-bold mb-3 text-gray-900">2. Validación Backend</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">Capa de seguridad inquebrantable: el servidor sanitiza y verifica cada byte para protegernos contra inyecciones SQL, XSS y otras amenazas críticas.</p>
-        </article>
+        <div class="service-card-wrapper" role="listitem">
+          <article class="service-card h-full">
+            <div class="w-12 h-12 bg-violet-50 text-violet-600 rounded-2xl flex items-center justify-center mb-5 text-xl" aria-hidden="true"><i class="fa-solid fa-server"></i></div>
+            <h3 class="text-lg font-bold mb-3 text-gray-900">2. Validación Backend</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">Capa de seguridad inquebrantable: el servidor sanitiza y verifica cada byte para protegernos contra inyecciones SQL, XSS y otras amenazas críticas.</p>
+          </article>
+        </div>
 
-        <article class="service-card" role="listitem" class="sm:col-span-2 lg:col-span-1">
-          <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-5 text-xl" aria-hidden="true"><i class="fa-solid fa-user-check"></i></div>
-          <h3 class="text-lg font-bold mb-3 text-gray-900">3. Validación Humana</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">CAPTCHA avanzado, verificación en dos pasos (2FA) y activación por correo para bloquear tráfico automatizado y asegurar identidades reales.</p>
-        </article>
+        <div class="service-card-wrapper sm:col-span-2 lg:col-span-1" role="listitem">
+          <article class="service-card h-full">
+            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-5 text-xl" aria-hidden="true"><i class="fa-solid fa-user-check"></i></div>
+            <h3 class="text-lg font-bold mb-3 text-gray-900">3. Validación Humana</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">CAPTCHA avanzado, verificación en dos pasos (2FA) y activación por correo para bloquear tráfico automatizado y asegurar identidades reales.</p>
+          </article>
+        </div>
       </div>
     </section>
   </main>
@@ -1047,6 +1091,59 @@ input:focus {
 
     document.addEventListener('DOMContentLoaded', () => {
       AuthModal.init();
+
+      // Efecto de movimiento en el Hero Section con el mouse
+      const heroSection = document.querySelector('.hero-gradient');
+      if (heroSection) {
+        const heroHeading = document.getElementById('hero-heading');
+        const heroBadge = heroHeading ? heroHeading.previousElementSibling : null;
+        const heroDesc = heroHeading ? heroHeading.nextElementSibling : null;
+        const heroBtns = heroDesc ? heroDesc.nextElementSibling : null;
+
+        // Configuración de transiciones y aceleración de hardware
+        const trackingTransition = 'transform 0.15s cubic-bezier(0.25, 1, 0.5, 1)';
+        [heroBadge, heroHeading, heroDesc, heroBtns].forEach(el => {
+          if (el) {
+            el.style.transition = trackingTransition;
+            el.style.willChange = 'transform';
+          }
+        });
+
+        heroSection.addEventListener('mousemove', (e) => {
+          const rect = heroSection.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+
+          // Factores de movimiento sutiles para generar profundidad 3D (parallax)
+          const factorBadge = 0.04;
+          const factorHeading = 0.025;
+          const factorDesc = 0.015;
+          const factorBtns = 0.01;
+
+          if (heroBadge) heroBadge.style.transform = `translate(${x * factorBadge}px, ${y * factorBadge}px)`;
+          if (heroHeading) heroHeading.style.transform = `translate(${x * factorHeading}px, ${y * factorHeading}px)`;
+          if (heroDesc) heroDesc.style.transform = `translate(${x * factorDesc}px, ${y * factorDesc}px)`;
+          if (heroBtns) heroBtns.style.transform = `translate(${x * factorBtns}px, ${y * factorBtns}px)`;
+        });
+
+        heroSection.addEventListener('mouseleave', () => {
+          // Resetear a su posición original de forma suave y lenta al salir el cursor
+          const resetTransition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+          [heroBadge, heroHeading, heroDesc, heroBtns].forEach(el => {
+            if (el) {
+              el.style.transition = resetTransition;
+              el.style.transform = 'translate(0px, 0px)';
+            }
+          });
+
+          // Restaurar la transición responsiva de tracking tras finalizar la animación de reset
+          setTimeout(() => {
+            [heroBadge, heroHeading, heroDesc, heroBtns].forEach(el => {
+              if (el) el.style.transition = trackingTransition;
+            });
+          }, 600);
+        });
+      }
 
       const menuToggle = document.getElementById('mobile-menu-toggle');
       const menuClose = document.getElementById('mobile-menu-close');
