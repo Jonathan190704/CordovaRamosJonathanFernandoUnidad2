@@ -14,13 +14,7 @@ require_once __DIR__ . '/../libs/SMTP.php';
 
 $recaptchaSecret = RECAPTCHA_SECRET;
 
-$mail->isSMTP();
-    $mail->Host       = SMTP_HOST;  
-    $mail->SMTPAuth   = true;                                 
-    $mail->Username   = SMTP_USER;  
-    $mail->Password   = SMTP_PASS;  
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; 
-    $mail->Port       = SMTP_PORT;
+// AQUI ESTABA EL ERROR: Se eliminó el bloque suelto de $mail->isSMTP() que estaba causando el 'null'
 
 $input = json_decode(file_get_contents('php://input'), true);
 $action = $input['action'] ?? '';
@@ -69,7 +63,6 @@ if ($action === 'request') {
     $user = $stmt->fetch();
 
     if (!$user) {
-
         echo json_encode(['ok' => true, 'msg' => 'Si el correo está registrado, recibirás un código de recuperación pronto.']);
         exit;
     }
@@ -90,6 +83,7 @@ if ($action === 'request') {
     ]);
 
 
+    // AQUI ES DONDE REALMENTE SE DEBE CONFIGURAR EL CORREO, ya que creaste la variable $mail
     $mail = new PHPMailer(true);
 
     try {
@@ -98,7 +92,7 @@ if ($action === 'request') {
         $mail->SMTPAuth   = true;
         $mail->Username   = SMTP_USER;
         $mail->Password   = SMTP_PASS;
-        $mail->SMTPSecure = SMTP_ENCRYPT;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         $mail->Port       = SMTP_PORT;
         $mail->CharSet    = 'UTF-8';
 
@@ -121,7 +115,7 @@ if ($action === 'request') {
                     
                     <p style='font-size: 12px; color: #9ca3af; line-height: 1.5;'>Si tú no realizaste esta solicitud, puedes ignorar este correo de forma segura.</p>
                     <hr style='border: 0; border-top: 1px solid #e5e7eb; margin: 20px 0;'>
-                    <p style='font-size: 11px; color: #9ca3af; text-align: center;'>&copy; 2026 PortalCore. Sistema de identidad.</p>
+                    <p style='font-size: 11px; color: #9ca3af; text-align: center;'>&copy; " . date('Y') . " PortalCore. Sistema de identidad.</p>
                 </div>
             </div>
         ";
@@ -177,3 +171,4 @@ if ($action === 'reset') {
 }
 
 echo json_encode(['ok' => false, 'error' => 'unknown_action', 'msg' => 'Acción no reconocida.']);
+?>
