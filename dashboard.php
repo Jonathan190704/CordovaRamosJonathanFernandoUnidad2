@@ -1,4 +1,6 @@
 <?php
+require_once 'config/auth.php';
+// verificarAcceso();  <--- COMENTA ESTA LÍNEA TEMPORALMENTE
 require_once 'config/database.php';
 
 if (!isset($_SESSION['user_id'])) {
@@ -53,7 +55,6 @@ if (!isset($_SESSION['user_id'])) {
         .delay-200 { animation-delay: 200ms; }
         .delay-300 { animation-delay: 300ms; }
 
-        /* Efecto elástico para clics en botones */
         .btn-elastic:active {
             transform: scale(0.95);
         }

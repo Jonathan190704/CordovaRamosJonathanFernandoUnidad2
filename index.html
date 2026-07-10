@@ -331,7 +331,7 @@
   <form id="form-chat" class="p-3 bg-white border-t border-gray-100 flex gap-2 items-center">
     <input type="text" id="chat-input" required autocomplete="off" class="flex-1 px-4 py-2.5 bg-gray-100 border-transparent rounded-xl text-sm focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all" placeholder="Escribe tu mensaje...">
     <button type="submit" id="btn-send-chat" class="bg-brand-600 text-white w-10 h-10 rounded-xl hover:bg-brand-700 transition-colors flex items-center justify-center flex-shrink-0 shadow-md">
-      <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+     <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
     </button>
   </form>
   
@@ -807,9 +807,14 @@
               return;
             }
             
-            Toast.show('success', 'Éxito', 'Bienvenido, has iniciado sesión correctamente.');
+           Toast.show('success', 'Éxito', 'Bienvenido, has iniciado sesión correctamente.');
             setTimeout(() => { 
-              window.location.href = 'dashboard.php'; 
+              // Validamos el rol que nos devuelve PHP dentro del objeto "result"
+              if (result.user && result.user.rol === 'admin') {
+                window.location.href = 'admin_usuarios.php'; // Redirige al panel de admin
+              } else {
+                window.location.href = 'dashboard.php'; // Redirige al panel de usuario
+              }
             }, 1200);
           }
         } catch (err) {

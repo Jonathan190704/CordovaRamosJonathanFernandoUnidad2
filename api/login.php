@@ -40,9 +40,10 @@ if (!verificarTokenHumano($captchaToken)) {
 
 try {
     $stmt = $pdo->prepare(
-        'SELECT id, nombre, email, password_hash
-         FROM usuarios
-         WHERE email = ?'
+        'SELECT u.id, u.nombre, u.email, u.password_hash, r.nombre_rol
+         FROM usuarios u
+         INNER JOIN roles r ON u.rol_id = r.id
+         WHERE u.email = ?'
     );
 
     $stmt->execute([$email]);
@@ -56,25 +57,31 @@ try {
 
         session_regenerate_id(true);
 
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['user_name'] = htmlspecialchars(
-            $user['nombre'],
-            ENT_QUOTES,
-            'UTF-8'
+        $sessionToken = bin2hex(random_bytes(32));
+        $ipAddress = $_SERVER['REMOTE_ADDR'] ?? null;
+        $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? null;
+
+        $stmtSession = $pdo->prepare(
+            'INSERT INTO sesiones_activas (usuario_id, session_token, ip_address, user_agent) 
+             VALUES (?, ?, ?, ?)'
         );
-        $_SESSION['user_email'] = htmlspecialchars(
-            $user['email'],
-            ENT_QUOTES,
-            'UTF-8'
-        );
+        $stmtSession->execute([$user['id'], $sessionToken, $ipAddress, $userAgent]);
+
+        $_SESSION['usuario_id'] = $user['id']; 
+        $_SESSION['user_name'] = htmlspecialchars($user['nombre'], ENT_QUOTES, 'UTF-8');
+        $_SESSION['user_email'] = htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8');
+        
+        $_SESSION['rol_nombre'] = $user['nombre_rol']; 
+        $_SESSION['session_token'] = $sessionToken;    
 
         echo json_encode([
             'ok' => true,
             'msg' => 'Acceso concedido',
             'user' => [
-                'id' => $_SESSION['user_id'],
+                'id' => $_SESSION['usuario_id'],
                 'name' => $_SESSION['user_name'],
-                'email' => $_SESSION['user_email']
+                'email' => $_SESSION['user_email'],
+                'rol' => $_SESSION['rol_nombre'] 
             ]
         ]);
     } else {
